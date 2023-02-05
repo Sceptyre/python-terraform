@@ -70,18 +70,18 @@ class BlockParams(TerraformDict):
         }
     """
 
-    _child_blocks: list['BaseTerraformBlock']
+    _child_blocks: list['TerraformBlockBase']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._child_blocks = []
         pass
 
-    def add_child_blocks(self, *blocks: 'BaseTerraformBlock'):
+    def add_child_blocks(self, *blocks: 'TerraformBlockBase'):
         self._child_blocks.extend( blocks )
 
     @staticmethod
-    def encode_block(block: 'BaseTerraformBlock'):
+    def encode_block(block: 'TerraformBlockBase'):
         return str(block).replace("\n", "\n\t")
 
     def __str__(self) -> str:
@@ -127,6 +127,15 @@ class TerraformBlockBase():
     @property
     def is_typed(self) -> bool:
         return bool(self._block_type)
+
+    def output_value(self, attribute: str) -> str:
+        """
+            Used to reference any attribute values
+        """
+        if not self.is_named:
+            raise Exception(f"Invalid mapping of output of unnamed resource: {repr(self)}")
+
+        return f"${{{repr(self)}.{attribute}}}"
 
     def set_params(self, **kwargs: dict) -> None:
         for k,v in kwargs.items():
