@@ -1,7 +1,7 @@
 """
     Basic module to generate Terraform configurations using python code
 """
-from .types    import BaseTerraformBlock
+from .types    import TerraformBlockBase
 from .          import blocks, types
 
 class TerraformDocument():
@@ -14,7 +14,7 @@ class TerraformDocument():
     def __init__(self) -> None:
         self._blocks = []
 
-    def add_blocks(self, *blocks: list[BaseTerraformBlock]):
+    def add_blocks(self, *blocks: list[TerraformBlockBase]):
         self._blocks.extend( blocks )
 
     def dumps(self) -> str:

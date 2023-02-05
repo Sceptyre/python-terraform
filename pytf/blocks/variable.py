@@ -1,6 +1,6 @@
-from ..types import BaseNamedTerraformBlock
+from ..types import TerraformBlockBase
 
-class TerraformVariableBlock(BaseNamedTerraformBlock):
+class TerraformVariableBlock(TerraformBlockBase):
     _block_category = "variable"
 
     def __repr__(self) -> str:

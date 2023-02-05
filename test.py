@@ -9,27 +9,32 @@ provider = pytf.blocks.TerraformProviderBlock(
     }
 )
 
-instance = pytf.blocks.TerraformResourceBlock(
-    block_type = "aws_instance",
-    block_name = "my_instance",
-    params     = {
-        "ami"           : "my-ami",
-        "instance_type" : "t2.micro"
-    }
-)
-instance_network_interface = pytf.types.BaseTerraformBlock(
-    block_category  = "network_interface",
-    params          = {
-        "network_interface_id"  : "my-interface-id",
-        "device_index"          : 0
-    }
-)
+def create_instance(id: str):
+    instance = pytf.blocks.TerraformResourceBlock(
+        block_type = "aws_instance",
+        block_name = f"my_instance_{id}",
+        params     = {
+            "ami"           : f"my-ami-{id}",
+            "instance_type" : "t2.micro"
+        }
+    )
+    instance_network_interface = pytf.types.TerraformBlockBase(
+        block_category  = "network_interface",
+        params          = {
+            "network_interface_id"  : "my-interface-id",
+            "device_index"          : 0
+        }
+    )
 
-instance.add_child_blocks(instance_network_interface)
+    instance.add_child_blocks(instance_network_interface)
+
+    return instance
+
+instances = [create_instance(x) for x in range(7)]
 
 doc.add_blocks(
     provider,
-    instance
+    *instances
 )
 
 print(doc)

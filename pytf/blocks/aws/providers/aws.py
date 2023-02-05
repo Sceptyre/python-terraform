@@ -1,4 +1,4 @@
 from pytf.blocks import TerraformProviderBlock
 
 class AWSProviderBlock(TerraformProviderBlock):
-    type = "aws"
+    _block_type = "aws"

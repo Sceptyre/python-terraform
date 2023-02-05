@@ -42,7 +42,7 @@ instance = pytf.blocks.TerraformResourceBlock(
         "instance_type" : "t2.micro"
     }
 )
-instance_network_interface = pytf.types.BaseTerraformBlock(
+instance_network_interface = pytf.types.TerraformBlockBase(
     block_category  = "network_interface",
     params          = {
         "network_interface_id"  : "my-interface-id",

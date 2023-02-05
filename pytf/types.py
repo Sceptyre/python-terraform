@@ -41,7 +41,10 @@ class TerraformDict(dict):
             out = TerraformDict.encode_bool(value)
         elif    isinstance(value, list):
             out = TerraformDict.encode_list(value)
-        elif    isinstance(value, BaseNamedTerraformBlock):
+        elif    isinstance(value, TerraformBlockBase):
+            if not value.is_named:
+                raise Exception(f"Unable to map unamed resource {repr(value)}")
+
             out = repr(value)
 
         return out
@@ -94,100 +97,64 @@ class BlockParams(TerraformDict):
 
         return params_str[:-1] + "\n\t" + ("\n\n\t".join(block_strings)) + "\n}"
 
-class BaseTerraformBlock():
-    """
-        Base class for representing a block in terraform
-
-        <block_category> {
-            ...
-        }
-    """
+class TerraformBlockBase():
     _block_category     : str = None
+    _block_type         : str = None
+    _block_name         : str = None
 
-    _block_params       : BlockParams
+    _block_params       : BlockParams = None
 
-    def __init__(self, params: dict = {}, block_category: str = "") -> None:
-        self._block_params      = BlockParams( params or {} )
-        self._block_category    = self._block_category or block_category
+    def __init__(self, params: dict = {}, child_blocks: list['TerraformBlockBase'] = [], **kwargs ):
+        self._block_category    = kwargs.get("block_category", self._block_category)
+        self._block_type        = kwargs.get("block_type", self._block_type)
+        self._block_name        = kwargs.get("block_name", self._block_name)
+
+        self._block_params = BlockParams( params )
+        self.add_child_blocks(*child_blocks)
+
+        self.__post_init__()
+
+    def __post_init__(self): pass
 
     @property
-    def _block_params_str_(self) -> str:
+    def _block_params_str(self) -> str:
         return str(self._block_params)
 
-    def set_param(self, **kwargs):
+    @property
+    def is_named(self) -> bool:
+        return bool(self._block_name)
+
+    @property
+    def is_typed(self) -> bool:
+        return bool(self._block_type)
+
+    def set_params(self, **kwargs: dict) -> None:
         for k,v in kwargs.items():
             self._block_params[k] = v
 
-    def add_child_blocks(self, *blocks: list['BaseTerraformBlock']):
+    def add_child_blocks(self, *blocks: list['TerraformBlockBase']):
         self._block_params.add_child_blocks( *blocks )
 
-    def as_reference_str(self) -> str:
-        return self.__repr__()
-
-    def __str__(self) -> str:
-        out_str = f"{self._block_category}"
-
-        out_str += f" {self._block_params_str_}"
-
-        return out_str
-
-class BaseNamedTerraformBlock(BaseTerraformBlock):
-    """
-        Extension of base block that supports named items
-        <block_category> "<block_name>" {
-            ...
-        }
-    """
-
-    _block_name: str = None
-
-    def __init__(self, params: dict = {}, block_name: str = "") -> None:
-        super().__init__(params=params)
-        self._block_name = self._block_name or block_name
-    
     def __repr__(self) -> str:
-        return f"{self._block_category}.{self._block_name}"
+        rep = f"{self._block_category}"
+
+        if self.is_typed:
+            rep += f".{self._block_type}"
+
+        if self.is_named:
+            rep += f".{self._block_name}"
+
+        return rep
 
     def __str__(self) -> str:
         out_str = f"{self._block_category}"
 
-        if self._block_name:
-            out_str += f" \"{self._block_name}\""
-
-        out_str += f" {self._block_params_str_}"
-
-        return out_str
-
-class BaseTypedTerraformBlock(BaseNamedTerraformBlock):
-    """
-        Extension of named blocks that supports types, Such as in the case of resources.
-
-        <block_category> <block_type> <block_name> {
-            ...
-        }
-    """
-
-    _block_type : str = None
-
-    def __init__(self, params: dict = {}, block_type: str = "", block_name: str = "") -> None:
-        super().__init__(
-            params=params,
-            block_name=block_name
-        )
-        self._block_type = self._block_type or block_type
-
-    def __repr__(self) -> str:
-        return f"{self._block_category}.{self._block_type}.{self._block_name}"
-
-    def __str__(self) -> str:
-        out_str = f"{self._block_category}"
-
-        if self._block_type:
+        if self.is_typed:
             out_str += f" \"{self._block_type}\""
 
-        if self._block_name:
+        if self.is_named:
             out_str += f" \"{self._block_name}\""
 
-        out_str += f" {self._block_params_str_}"
+        out_str += f" {self._block_params_str}"
 
         return out_str

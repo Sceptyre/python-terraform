@@ -1,6 +1,6 @@
-from ..types import BaseTypedTerraformBlock
+from ..types import TerraformBlockBase
 
-class TerraformProviderBlock(BaseTypedTerraformBlock):
+class TerraformProviderBlock(TerraformBlockBase):
     """
         Basic provider block
         provider "type" {}

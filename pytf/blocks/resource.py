@@ -1,6 +1,6 @@
-from ..types import BaseTypedTerraformBlock
+from ..types import TerraformBlockBase
 
-class TerraformResourceBlock(BaseTypedTerraformBlock):
+class TerraformResourceBlock(TerraformBlockBase):
     """
         Basic resource block
         resource "type" "name" {}
