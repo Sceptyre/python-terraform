@@ -1,0 +1,27 @@
+name: Create Release
+
+on:
+  pull_request:
+    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:    
+      - name: "Checkout Repo"
+        uses: actions/checkout@v2
+        
+      - name: Read VERSION file to ENV
+        run: echo "version=$(cat VERSION)" >> $GITHUB_ENV
+          
+      - name: "Version Specific Release"
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          title: "Bleeding Edge v${{ env.version}}.${{ github.run_number }}.${{ github.run_attempt }}"
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: true
+          automatic_release_tag: "v${{ env.version}}.${{ github.run_number }}.${{ github.run_attempt }}"
