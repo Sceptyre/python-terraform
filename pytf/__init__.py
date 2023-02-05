@@ -2,7 +2,7 @@
     Basic module to generate Terraform configurations using python code
 """
 from .types    import BaseTerraformBlock
-from .          import blocks
+from .          import blocks, types
 
 class TerraformDocument():
     """

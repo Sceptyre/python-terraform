@@ -102,12 +102,13 @@ class BaseTerraformBlock():
             ...
         }
     """
-    _block_category     : str = ""
+    _block_category     : str = None
 
     _block_params       : BlockParams
 
-    def __init__(self, params: dict = {}) -> None:
+    def __init__(self, params: dict = {}, block_category: str = "") -> None:
         self._block_params      = BlockParams( params or {} )
+        self._block_category    = self._block_category or block_category
 
     @property
     def _block_params_str_(self) -> str:
@@ -141,7 +142,7 @@ class BaseNamedTerraformBlock(BaseTerraformBlock):
     _block_name: str = None
 
     def __init__(self, params: dict = {}, block_name: str = "") -> None:
-        super().__init__(params)
+        super().__init__(params=params)
         self._block_name = self._block_name or block_name
     
     def __repr__(self) -> str:
@@ -169,7 +170,10 @@ class BaseTypedTerraformBlock(BaseNamedTerraformBlock):
     _block_type : str = None
 
     def __init__(self, params: dict = {}, block_type: str = "", block_name: str = "") -> None:
-        super().__init__(block_name, params)
+        super().__init__(
+            params=params,
+            block_name=block_name
+        )
         self._block_type = self._block_type or block_type
 
     def __repr__(self) -> str:
