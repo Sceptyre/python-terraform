@@ -1,8 +1,8 @@
-import pytf
+import py2terraform
 
-doc = pytf.TerraformDocument()
+doc = py2terraform.TerraformDocument()
 
-provider = pytf.blocks.TerraformProviderBlock(
+provider = py2terraform.blocks.TerraformProviderBlock(
     block_type  = "aws",
     params      = {
         "region"    : "us-east-1"
@@ -10,7 +10,7 @@ provider = pytf.blocks.TerraformProviderBlock(
 )
 
 def create_instance(id: str):
-    instance = pytf.blocks.TerraformResourceBlock(
+    instance = py2terraform.blocks.TerraformResourceBlock(
         block_type = "aws_instance",
         block_name = f"my_instance_{id}",
         params     = {
@@ -18,7 +18,7 @@ def create_instance(id: str):
             "instance_type" : "t2.micro"
         }
     )
-    instance_network_interface = pytf.types.TerraformBlockBase(
+    instance_network_interface = py2terraform.types.TerraformBlockBase(
         block_category  = "network_interface",
         params          = {
             "network_interface_id"  : "my-interface-id",
