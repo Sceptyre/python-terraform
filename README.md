@@ -2,6 +2,25 @@
 Prototype/concept for building terraform configs using python.  
 May be useful for deploying flask/django apps by building the cloud configs also in python.
 
+## Usage
+### Extending
+```py
+from pytf.types import TerraformBlockBase
+
+class AWSProvider(TerraformBlockBase):
+    # Define constant values
+    _block_category = "provider"
+    _block_type     = "aws"
+
+    # Define defaults
+    def __post_init__(self):
+        self.set_params(region = "us-east-1")
+        self.add_child_blocks(
+            ...
+        )
+```
+
+
 ## Examples
 Desired Output
 ```tf
