@@ -104,10 +104,18 @@ class TerraformBlockBase():
 
     _block_params       : BlockParams = None
 
-    def __init__(self, params: dict = {}, child_blocks: list['TerraformBlockBase'] = [], **kwargs ):
-        self._block_category    = kwargs.get("block_category", self._block_category)
-        self._block_type        = kwargs.get("block_type", self._block_type)
-        self._block_name        = kwargs.get("block_name", self._block_name)
+    def __init__(
+        self, 
+        params          : dict = {}, 
+        child_blocks    : list['TerraformBlockBase'] = [],
+        
+        block_category  : str = "",
+        block_type      : str = "",
+        block_name      : str = ""
+    ):
+        self._block_category    = block_category    or self._block_category
+        self._block_type        = block_type        or self._block_type
+        self._block_name        = block_name        or self._block_name
 
         self._block_params = BlockParams( params )
         self.add_child_blocks(*child_blocks)
