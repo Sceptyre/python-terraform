@@ -29,11 +29,6 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Update Version Info
-      run: | 
-        rm -f VERSION
-        ${{ GITHUB_REF }} >> VERSION
-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
