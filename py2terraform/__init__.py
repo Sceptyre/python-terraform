@@ -4,4 +4,4 @@
 from .types import TerraformDocument
 from .      import blocks, types
 
-__version__ = 0.3
+__version__ = "0.3"
