@@ -1,7 +1,7 @@
 name: Create a new patch release
 on: 
   push:
-    branch:
+    branches:
       - "main"
       
 jobs:
@@ -10,7 +10,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Create new patch release
-        run: .github/scripts/release.py
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Python Semantic Release
+        uses: relekang/python-semantic-release@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repository_username: __token__
+          repository_password: ${{ secrets.PYPI_TOKEN }}
