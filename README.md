@@ -1,11 +1,11 @@
-# PYTF
+# PY2Terraform
 Prototype/concept for building terraform configs using python.  
 May be useful for deploying flask/django apps by building the cloud configs also in python.
 
 ## Usage
 ### Extending
 ```py
-from pytf.types import TerraformBlockBase
+from py2terraform.types import TerraformBlockBase
 
 class AWSProvider(TerraformBlockBase):
     # Define constant values
@@ -42,18 +42,18 @@ resource "aws_instance" "my_instance" {
 
 Python Code
 ```py
-import pytf
+import py2terraform
 
-doc = pytf.TerraformDocument()
+doc = py2terraform.TerraformDocument()
 
-provider = pytf.blocks.TerraformProviderBlock(
+provider = py2terraform.blocks.TerraformProviderBlock(
     block_type  = "aws",
     params      = {
         "region"    : "us-east-1"
     }
 )
 
-instance = pytf.blocks.TerraformResourceBlock(
+instance = py2terraform.blocks.TerraformResourceBlock(
     block_type = "aws_instance",
     block_name = "my_instance",
     params     = {
@@ -61,7 +61,7 @@ instance = pytf.blocks.TerraformResourceBlock(
         "instance_type" : "t2.micro"
     }
 )
-instance_network_interface = pytf.types.TerraformBlockBase(
+instance_network_interface = py2terraform.types.TerraformBlockBase(
     block_category  = "network_interface",
     params          = {
         "network_interface_id"  : "my-interface-id",
